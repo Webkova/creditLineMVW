@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 
 import java.util.List;
 
-public class MainController {
+public class MainView {
 
 	// Spring
 	@Autowired
