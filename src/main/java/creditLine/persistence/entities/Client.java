@@ -3,44 +3,47 @@ package creditLine.persistence.entities;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-
+import javax.persistence.JoinColumn;
 
 @Entity
 public class Client {
-	
+
 	@Id
 	@GeneratedValue
 	private int idclient;
-	
-	@ManyToMany(fetch = FetchType.EAGER)
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "CLIENT_ACCOUNT", joinColumns = { @JoinColumn(name = "idclient") }, inverseJoinColumns = {
+			@JoinColumn(name = "idaccount") })
 	private List<Account> account;
-	
+
 	@Column(nullable = false)
 	private String name;
-	
+
 	@Column(nullable = false)
 	private String surname;
-	
+
 	@Column(nullable = false)
 	private String address;
-	
+
 	@Column
 	private String nationality;
-	
+
 	@Column
 	private String creationDate;
-	
 
-	public Client () {
-		
+	public Client() {
+
 	}
-	
+
 	public Client(String name, String surname, String address, String nationality) {
 		this.name = name;
 		this.surname = surname;
@@ -48,7 +51,7 @@ public class Client {
 		this.nationality = nationality;
 		this.creationDate = Instant.now().toString();
 	}
-	
+
 	public Client(String name, String surname, String address, String nationality, List<Account> account) {
 		this.name = name;
 		this.surname = surname;
@@ -57,13 +60,11 @@ public class Client {
 		this.creationDate = Instant.now().toString();
 		this.account = account;
 	}
-	
 
 	@Override
 	public String toString() {
 		return "Client [idclient=" + idclient + ", account=" + account + ", name=" + name + ", surname=" + surname
-				+ ", address=" + address + ", nationality=" + nationality + ", creationDate=" + creationDate
-				+ "]";
+				+ ", address=" + address + ", nationality=" + nationality + ", creationDate=" + creationDate + "]";
 	}
 
 	@Override
@@ -73,14 +74,14 @@ public class Client {
 
 	@Override
 	public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        } else if (getClass() != obj.getClass()) {
-            return false;
-        } else {
-            Client other = (Client) obj;
-            return idclient == other.idclient;
-        }		
+		if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			Client other = (Client) obj;
+			return idclient == other.idclient;
+		}
 	}
 
 	public int getIdclient() {

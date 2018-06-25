@@ -17,10 +17,11 @@ public interface ClientRepository extends CrudRepository<Client, Long> {
     List<Client> findAll();
     
 	@Modifying
-	@Query("UPDATE Client c SET c.name = ?2 WHERE idclient = ?1")
-	void updateClient(int idclient,String name);
+	@Query("UPDATE Client c SET c.name = ?2, c.surname = ?3, c.address = ?4, c.nationality = ?5 WHERE idclient = ?1")
+	void updateClient(int idclient,String name, String surname, String address, String nationality);
 	
 	int deleteByIdclient(int idclient);
+	
 
 }
 

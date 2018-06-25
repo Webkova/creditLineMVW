@@ -1,5 +1,7 @@
 package creditLine.persistence.entities;
 
+import java.time.Instant;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +16,9 @@ public class Account {
 	private int idaccount;
 	
 	@Column(nullable = false)
+	private String concept;
+	
+	@Column(nullable = false)
 	private int accountType;
 	
 	@Column(nullable = false)
@@ -22,22 +27,24 @@ public class Account {
 	@Column
 	private String creationDate;
 	
-	@Column
-	private int modificationDate;
-	
-
-	
-	public Account(int owner, int accountType) {
+	public Account() {
+		
+	}
+			
+	public Account(String concept, int accountType, int accountStatus) {
+		this.concept = concept;
 		this.accountType = accountType;
-		this.accountStatus = 0;
+		this.accountStatus = accountStatus;
+		this.creationDate = Instant.now().toString();
 	}
 		
+	
 	@Override
 	public String toString() {
-		return "Account [idaccount=" + idaccount + ", accountType=" + accountType + ", accountStatus=" + accountStatus
-				+ ", creationDate=" + creationDate + ", modificationDate=" + modificationDate 
-				+ "]";
+		return "Account [idaccount=" + idaccount + ", concept=" + concept + ", accountType=" + accountType
+				+ ", accountStatus=" + accountStatus + ", creationDate=" + creationDate + "]";
 	}
+
 
 	@Override
 	public int hashCode() {
@@ -88,15 +95,13 @@ public class Account {
 		this.creationDate = creationDate;
 	}
 
-	public int getModificationDate() {
-		return modificationDate;
+	public String getConcept() {
+		return concept;
 	}
 
-	public void setModificationDate(int modificationDate) {
-		this.modificationDate = modificationDate;
+	public void setConcept(String concept) {
+		this.concept = concept;
 	}
-
-
-
 	
 }
+

@@ -1,5 +1,6 @@
 package creditLine.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import creditLine.persistence.daos.ClientRepository;
+import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
 import creditLine.services.ClientService;
 
@@ -26,7 +28,11 @@ public class ClientController implements ClientService {
 
 	@PostConstruct
 	public void generateTestData() {
-		save(new Client("Andrés", "Devia", "Gran Vía, 5", "Española"));
+		List<Account> account = new ArrayList<Account>();
+		account.add(new Account("Cuenta de Ahorro", 300, 01));
+		account.add(new Account("Cuenta de Corriente", 302, 02));
+		account.add(new Account("Cuenta de Corriente moneda extranjera", 304, 01));
+		save(new Client("Andrés", "Devia", "Gran Vía, 5", "Española", account));
 		save(new Client("Marcos", "Lema", "Colón, 9", "Española"));
 	}
 
@@ -41,8 +47,8 @@ public class ClientController implements ClientService {
 	}
 	
 	@Override
-	public void updateClient(int idclient, String name) {
-		repository.updateClient(idclient, name);
+	public void updateClient(int idclient, String name, String surname, String address, String nationality) {
+		repository.updateClient(idclient, name, surname, address, nationality);
 	}
 	
 	@Override
@@ -51,6 +57,5 @@ public class ClientController implements ClientService {
 	}
 
 
-	
 
 }
