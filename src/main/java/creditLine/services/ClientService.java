@@ -8,9 +8,11 @@ public interface ClientService {
 
 	Client save(Client client);
 
-	List<Client> findAll();
-	
-	void updateClient(int idclient, String name);	
+	List<Client> findAll();	
 	
 	int deleteByIdclient(int idclient);
+
+	void updateClient(int idclient, String name, String surname, String address, String nationality);
+
+
 }

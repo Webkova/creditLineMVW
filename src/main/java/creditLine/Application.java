@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application extends AbstractJavaFxApplicationSupport {
 
-    @Value("${ui.title:Credit Line App}")//
+    @Value("${ui.title:Credit Line App}")
     private String windowTitle;
 
     @Qualifier("mainView")
