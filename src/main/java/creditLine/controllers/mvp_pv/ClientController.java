@@ -1,4 +1,4 @@
-package creditLine.controllers;
+package creditLine.controllers.mvp_pv;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +7,19 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
 import creditLine.persistence.daos.ClientRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
-import creditLine.services.ClientService;
-import creditLine.view.MainView;
+import creditLine.services.mvp_pv.ClientService;
+import creditLine.view.mvp_pv.MainView;
 
 @Service
 @Transactional
+@Lazy
 public class ClientController implements ClientService {
 
 	private ClientRepository repository;
@@ -58,6 +60,50 @@ public class ClientController implements ClientService {
 	public int deleteByIdclient(int idclient) {
 		return repository.deleteByIdclient(idclient);
 	}
+
+	@Override
+	public void updateClientTable() {
+		List<Client> clients = view.getAllClients();	
+		view.updateClientTableView(clients); 
+	}
+
+	@Override
+	public void showClientSelected() {
+		Client clientSelected =  view.getClientSelected();
+		view.displayClientSelected(clientSelected);
+	}
+
+	@Override
+	public void addClient() {
+		Client clientAdded = view.createClient(); 
+		
+		if (clientAdded != null) {
+			view.saveClient(clientAdded);
+			view.clearTableColumns();
+		}
+		
+	}
+
+	@Override
+	public void updateClient() {
+		boolean isUpdated = view.isClientDataFilled();
+		if (isUpdated) {
+			view.refreshClient();
+			view.updateTable();
+		}
+		
+	}
+
+	@Override
+	public void deleteClient() {
+		if (view.isDeleteClient()) {
+			view.updateTable();
+		}
+		
+	}
+	
+	
+
 
 
 

@@ -1,4 +1,4 @@
-package creditLine.controllers;
+package creditLine.controllers.mvp_pm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +14,16 @@ import creditLine.persistence.daos.ClientRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
 import creditLine.services.ClientService;
-import creditLine.view.MainView;
 
 @Service
 @Transactional
 public class ClientController implements ClientService {
 
-	private ClientRepository repository;
-	private MainView view;
+	private final ClientRepository repository;
 
 	@Autowired
-	public ClientController(MainView view, ClientRepository repository) {
+	public ClientController(ClientRepository repository) {
 		this.repository = repository;
-		this.view = view;
 	}
 
 	@PostConstruct

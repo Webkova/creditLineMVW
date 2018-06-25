@@ -1,4 +1,4 @@
-package creditLine.view;
+package creditLine.view.mvp_pm;
 
 import java.util.List;
 
@@ -7,8 +7,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-
-import creditLine.controllers.ClientController;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
 import creditLine.services.AccountService;
@@ -59,9 +57,7 @@ public class MainView {
 	
 	@FXML
 	private TextField txtAccountStatus;
-	
-	private ClientController clientController;
-	    
+    
     private ObservableList<Account> accountData;
     
     private ObservableList<Client> clientData;
@@ -71,11 +67,6 @@ public class MainView {
 	private int idAccountSelected = 0;
     
 	
-	public void setClientController(ClientController clientController) {
-		this.clientController = clientController;
-	}
-	
-
     
 	public TextField getTxtName() {
 		return txtName;
@@ -175,17 +166,9 @@ public class MainView {
 		}
     }
     
-    public List<Client> getClients() {
-    	return getAllClients();
-    }
-    
 	@SuppressWarnings("unchecked")
 	public void updateTable() {
-		
-	
-	}
-	
-	public void updateClientTableView(List<Client> clients) {
+		List<Client> clients = getAllClients();
 		clientData = FXCollections.observableArrayList(clients);
 		
 		TableColumn<Client, String> idColumn = new TableColumn<>("ID Cliente");
@@ -214,6 +197,7 @@ public class MainView {
 		tblClient.setItems(clientData);
 		idColumn.setSortType(TableColumn.SortType.DESCENDING);
 	}
+	
 	
 
 	

@@ -1,4 +1,4 @@
-package creditLine.controllers;
+package creditLine.controllers.mvp_pm;
 
 import java.util.List;
 
@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 import creditLine.persistence.daos.AccountRepository;
 import creditLine.persistence.entities.Account;
-import creditLine.services.AccountService;
-import creditLine.view.MainView;
+import creditLine.services.mvp_pm.AccountService;
 
 
 @Service
@@ -19,11 +18,9 @@ public class AccountController implements AccountService {
 	
 	private final AccountRepository repository;
 
-	
 	@Autowired
-	public AccountController( AccountRepository repository) {
+	public AccountController(AccountRepository repository) {
 		this.repository = repository;
-		
 	}
 	
 	@Override
