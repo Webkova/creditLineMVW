@@ -1,4 +1,4 @@
-package creditLine.controllers;
+package creditLine.controllers.mvp_sc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,23 +7,28 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
-import creditLine.persistence.daos.ClientRepository;
+import creditLine.persistence.daos.mvp_sc.ClientRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
-import creditLine.services.ClientService;
+import creditLine.services.mvp_sc.ClientService;
+import creditLine.view.mvp_sc.MainView;
 
 @Service
 @Transactional
+@Lazy
 public class ClientController implements ClientService {
 
-	private final ClientRepository repository;
+	private ClientRepository repository;
+	private MainView view;
 
 	@Autowired
-	public ClientController(ClientRepository repository) {
+	public ClientController(MainView view, ClientRepository repository) {
 		this.repository = repository;
+		this.view = view;
 	}
 
 	@PostConstruct
@@ -55,6 +60,48 @@ public class ClientController implements ClientService {
 	public int deleteByIdclient(int idclient) {
 		return repository.deleteByIdclient(idclient);
 	}
+
+	@Override
+	public void updateClientTable(List<Client> clients) {	
+		view.updateClientTableView(clients); 
+	}
+
+	@Override
+	public void showClientSelected() {
+		Client clientSelected =  view.getClientSelected();
+		view.displayClientSelected(clientSelected);
+	}
+
+	@Override
+	public void addClient() {
+		Client clientAdded = view.createClient(); 
+		
+		if (clientAdded != null) {
+			view.saveClient(clientAdded);
+			view.clearTableColumns();
+		}	
+	}
+
+	@Override
+	public void updateClient() {
+		boolean isUpdated = view.isClientDataFilled();
+		if (isUpdated) {
+			view.refreshClient();
+			view.updateTable();
+		}
+		
+	}
+
+	@Override
+	public void deleteClient() {
+		if (view.isDeleteClient()) {
+			view.updateTable();
+		}
+		
+	}
+	
+	
+
 
 
 

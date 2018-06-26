@@ -157,7 +157,7 @@ public class MainView {
 			setTxtAddress(clientSelected.getAddress());
 			setTxtNationality(clientSelected.getNationality());
 			idSelected = clientSelected.getIdclient();
-			System.out.println("El id del cliente seleccionado es: " + idSelected);
+			
 			showAccounts(idSelected);
 		}
     }
@@ -171,7 +171,6 @@ public class MainView {
 			setTxtAccountType(accountSelected.getAccountType());
 			setTxtAccountStatus(accountSelected.getAccountStatus());
 			idAccountSelected = accountSelected.getIdaccount();
-			System.out.println("El id de la cuenta seleccionada es: " + idAccountSelected);
 		}
     }
     
@@ -179,12 +178,13 @@ public class MainView {
     	return getAllClients();
     }
     
-	@SuppressWarnings("unchecked")
+	
 	public void updateTable() {
 		
 	
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void updateClientTableView(List<Client> clients) {
 		clientData = FXCollections.observableArrayList(clients);
 		
@@ -209,8 +209,7 @@ public class MainView {
 		tblClient.getColumns().setAll(idColumn, nameColumn, surnameColumn, addressColumn, nationalityColumn,
 				creationDateColumn);
 		
-		System.out.println("Columnas " + tblClient.getColumns().size());
-
+		
 		tblClient.setItems(clientData);
 		idColumn.setSortType(TableColumn.SortType.DESCENDING);
 	}
@@ -295,8 +294,7 @@ public class MainView {
 		tblAccount.getColumns().setAll(idaccountColumn, conceptColumn, accountTypeColumn, accountStatusColumn,
 				creationDateColumn);
 	
-		System.out.println("Columnas Account" + tblAccount.getColumns().size());
-
+		
 		idaccountColumn.setSortType(TableColumn.SortType.DESCENDING);
     }
     
@@ -333,7 +331,7 @@ public class MainView {
     
     @FXML
     void deleteAccount() {
-    	System.out.println(idAccountSelected);
+    	
 		if (idAccountSelected != 0) {
 			accountService.deleteByIdaccount(idAccountSelected);
 			showAccounts(idAccountSelected);
