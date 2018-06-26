@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import creditLine.persistence.daos.ClientRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
-import creditLine.services.ClientService;
+import creditLine.services.mvp_pm.ClientService;
 
 @Service
 @Transactional

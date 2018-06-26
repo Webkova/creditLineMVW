@@ -24,5 +24,29 @@ public interface ClientService {
 	
 	void addClient();
 	
+	public int getIdclient();
+
+	public void setIdclient(int idclient);
+
+	public String getName();
+
+	public void setName(String name);
+
+	public String getSurname();
+
+	public void setSurname(String surname);
+
+	public String getAddress();
+
+	public void setAddress(String address);
+
+	public String getNationality();
+
+	public void setNationality(String nationality);
+
+	public String getCreationDate();
+
+	public void setCreationDate(String creationDate);
+	
 	
 }

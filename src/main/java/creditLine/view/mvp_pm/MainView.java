@@ -9,8 +9,8 @@ import org.springframework.util.StringUtils;
 
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
-import creditLine.services.AccountService;
-import creditLine.services.ClientService;
+import creditLine.services.mvp_pm.AccountService;
+import creditLine.services.mvp_pm.ClientService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

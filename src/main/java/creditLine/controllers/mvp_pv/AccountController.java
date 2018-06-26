@@ -1,6 +1,7 @@
 package creditLine.controllers.mvp_pv;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -50,14 +51,14 @@ public class AccountController implements AccountService {
 
 	@Override
 	public void showAccountSelected() {
-		Account accountSelected = view.getAccounts();
+		Map accountSelected = (Map) view.getAccounts();
 		view.displayAccountSelected(accountSelected);
 	}
 
 	@Override
 	public void showAccounts(int idSelected) {
-		List<Account> accounts = view.getAccountByIdClient(idSelected);
-		view.getAccountsByID(accounts);
+//		List<Map> accounts = view.getAccountByIdClient(idSelected);
+//		view.getAccountsByID(accounts);
 		
 	}
 
