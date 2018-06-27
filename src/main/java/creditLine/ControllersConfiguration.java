@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.sun.javafx.css.StyleManager;
 
-import creditLine.view.mvp_pm.MainView;
+import creditLine.view.mvc.MainView;
 
 import java.io.IOException;
 import java.io.InputStream;

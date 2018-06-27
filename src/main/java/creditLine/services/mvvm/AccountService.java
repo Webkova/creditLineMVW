@@ -1,4 +1,4 @@
-package creditLine.services.mvp_pv;
+package creditLine.services.mvvm;
 
 import creditLine.persistence.entities.Account;
 import javafx.beans.property.IntegerProperty;
@@ -8,13 +8,9 @@ public interface AccountService {
 	
 	Account save();
 	
-	void saveAccount(); 
-	
 	void getAccountByIdclient(int idclient);
 
 	void deleteByIdaccount(int idaccount);
-	
-	void deleteAccount();
 	
 	void updateAccount();
 
@@ -39,10 +35,6 @@ public interface AccountService {
 	StringProperty getCreationDate();
 
 	void setCreationDate(StringProperty creationDate);
-
-	void addAccount();
-
-	void refreshAccount();
 	
 
 

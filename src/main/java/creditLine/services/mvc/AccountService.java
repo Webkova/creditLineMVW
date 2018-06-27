@@ -1,4 +1,4 @@
-package creditLine.services.mvp_sc;
+package creditLine.services.mvc;
 
 import creditLine.persistence.entities.Account;
 

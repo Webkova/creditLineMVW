@@ -1,4 +1,4 @@
-package creditLine.controllers.mvp_pm;
+package creditLine.controllers.mvvm;
 
 import javax.transaction.Transactional;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import creditLine.persistence.daos.AccountRepository;
 import creditLine.persistence.entities.Account;
-import creditLine.services.mvp_pm.AccountService;
+import creditLine.services.mvvm.AccountService;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,6 +21,7 @@ import javafx.beans.property.StringProperty;
 public class AccountController implements AccountService {
 	
 	private final AccountRepository repository;
+
 	
 	private IntegerProperty idaccount = new SimpleIntegerProperty();
 	private StringProperty concept = new SimpleStringProperty();
@@ -29,7 +30,7 @@ public class AccountController implements AccountService {
 	private StringProperty creationDate = new SimpleStringProperty();
 	
 	@Autowired
-	public AccountController( AccountRepository repository) {
+	public AccountController(AccountRepository repository) {
 		this.repository = repository;
 	}
 	
@@ -60,7 +61,6 @@ public class AccountController implements AccountService {
 		repository.deleteByIdaccount(idaccount);
 	}
 
-	
 	@Override
 	public Account findByIdaccount(int idaccount) {
 		return repository.findByIdaccount(idaccount);

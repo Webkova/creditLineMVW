@@ -1,4 +1,4 @@
-package creditLine.controllers.mvp_sc;
+package creditLine.controllers.mvc;
 
 import javax.transaction.Transactional;
 
@@ -9,8 +9,8 @@ import org.springframework.util.StringUtils;
 
 import creditLine.persistence.daos.AccountRepository;
 import creditLine.persistence.entities.Account;
-import creditLine.services.mvp_sc.AccountService;
-import creditLine.view.mvp_sc.MainView;
+import creditLine.services.mvc.AccountService;
+import creditLine.view.mvc.MainView;
 
 
 @Service

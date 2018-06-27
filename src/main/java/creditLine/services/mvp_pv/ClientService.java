@@ -2,51 +2,52 @@ package creditLine.services.mvp_pv;
 
 import java.util.List;
 
+
 import creditLine.persistence.entities.Client;
+
 
 public interface ClientService {
 
-	Client save(Client client);
+	void save();
 
 	List<Client> findAll();	
 	
 	int deleteByIdclient(int idclient);
-	
-	void deleteClient();
 
-	void updateClient(int idclient, String name, String surname, String address, String nationality);
-	
 	void updateClient();
+	
 
-	void updateClientTable();
-	
-	void showClientSelected();
-	
+	void findByIdclient(int idclient);
+
+	int getIdClient();
+
+	void setIdClient(int idClient);
+
+	String getName();
+
+	void setName(String name);
+
+	String getSurname();
+
+	void setSurname(String surname);
+
+	String getAddress();
+
+	void setAddress(String address);
+
+	String getNationality();
+
+	void setNationality(String nationality);
+
+	void searchByIdClient(int idClient);
+
 	void addClient();
-	
-	public int getIdclient();
 
-	public void setIdclient(int idclient);
+	void updateClientProcess();
 
-	public String getName();
 
-	public void setName(String name);
 
-	public String getSurname();
 
-	public void setSurname(String surname);
-
-	public String getAddress();
-
-	public void setAddress(String address);
-
-	public String getNationality();
-
-	public void setNationality(String nationality);
-
-	public String getCreationDate();
-
-	public void setCreationDate(String creationDate);
 	
 	
 }

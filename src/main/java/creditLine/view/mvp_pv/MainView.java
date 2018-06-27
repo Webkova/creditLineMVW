@@ -1,7 +1,6 @@
 package creditLine.view.mvp_pv;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -9,8 +8,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import creditLine.persistence.entities.Account;
-import creditLine.persistence.entities.Client;
 import creditLine.services.mvp_pv.AccountService;
 import creditLine.services.mvp_pv.ClientService;
 import javafx.collections.FXCollections;
@@ -34,10 +31,10 @@ public class MainView {
 	private HBox hboxTblAccounts;
 
 	@FXML
-	private TableView<Map> tblAccount;
+	TableView<Map> tblAccount;
 
 	@FXML
-	private TableView<Map> tblClient;
+	TableView<Map> tblClient;
 
 	@FXML
 	private TextField txtName;
@@ -60,7 +57,8 @@ public class MainView {
 	@FXML
 	private TextField txtAccountStatus;
 
-	private ObservableList<Account> accountData;
+	@FXML
+	private TextField txtSearchById;
 
 	private int idSelected = 0;
 
@@ -71,13 +69,12 @@ public class MainView {
 	private String surname;
 	private String address;
 	private String nationality;
-	private String creationDate;
-	
-	private int idAccount;
+
+	private int idaccount;
 	private String concept;
-	private String accountType;
-	private String accountStatus;
-	private String creationDateAccount;
+	private int accountType;
+	private int accountStatus;
+	private String creationDate;
 
 	private final String idColumnKey = "idclient";
 	private final String nameColumnKey = "name";
@@ -85,19 +82,51 @@ public class MainView {
 	private final String addressColumnKey = "address";
 	private final String nationalityColumnKey = "nationality";
 	private final String creationDateColumnKey = "creationDate";
-	
+
 	private final String idAccountColumnKey = "idaccount";
 	private final String conceptColumnKey = "concept";
 	private final String accountTypeColumnKey = "accountType";
 	private final String accountStatusColumnKey = "accountStatus";
 	private final String creationDateAccountColumnKey = "creationDate";
 
-	public void setClientService(ClientService clientService) {
-		this.clientService = clientService;
+	public int getIdaccount() {
+		return idaccount;
 	}
 
-	public void setAccountService(AccountService accountService) {
-		this.accountService = accountService;
+	public void setIdaccount(int idaccount) {
+		this.idaccount = idaccount;
+	}
+
+	public String getConcept() {
+		return concept;
+	}
+
+	public void setConcept(String concept) {
+		this.concept = concept;
+	}
+
+	public int getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(int accountType) {
+		this.accountType = accountType;
+	}
+
+	public int getAccountStatus() {
+		return accountStatus;
+	}
+
+	public void setAccountStatus(int accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+
+	public String getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public int getIdclient() {
@@ -140,12 +169,12 @@ public class MainView {
 		this.nationality = nationality;
 	}
 
-	public String getCreationDate() {
-		return creationDate;
+	public void setClientService(ClientService clientService) {
+		this.clientService = clientService;
 	}
 
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
+	public void setAccountService(AccountService accountService) {
+		this.accountService = accountService;
 	}
 
 	public TextField getTxtName() {
@@ -192,56 +221,16 @@ public class MainView {
 		return txtAccountType;
 	}
 
-	public void setTxtAccountType(int accountType) {
-		this.txtAccountType.setText(Integer.toString(accountType));
+	public void setTxtAccountType(String accountType) {
+		this.txtAccountType.setText(accountType);
 	}
 
 	public TextField getTxtAccountStatus() {
 		return txtAccountStatus;
 	}
 
-	public void setTxtAccountStatus(int accountStatus) {
-		this.txtAccountStatus.setText(Integer.toString(accountStatus));
-	}
-	
-	public int getIdAccount() {
-		return idAccount;
-	}
-
-	public void setIdAccount(int idAccount) {
-		this.idAccount = idAccount;
-	}
-
-	public String getConcept() {
-		return concept;
-	}
-
-	public void setConcept(String concept) {
-		this.concept = concept;
-	}
-
-	public String getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
-
-	public String getAccountStatus() {
-		return accountStatus;
-	}
-
-	public void setAccountStatus(String accountStatus) {
-		this.accountStatus = accountStatus;
-	}
-
-	public String getCreationDateAccount() {
-		return creationDateAccount;
-	}
-
-	public void setCreationDateAccount(String creationDateAccount) {
-		this.creationDateAccount = creationDateAccount;
+	public void setTxtAccountStatus(String accountStatus) {
+		this.txtAccountStatus.setText(accountStatus);
 	}
 
 	@FXML
@@ -256,72 +245,41 @@ public class MainView {
 
 	@PostConstruct
 	public void init() {
-		clientService.updateClientTable();
+
 	}
 
 	@FXML
 	void showClientSelected() {
-		clientService.showClientSelected();
-
+		displayClientSelected();
 	}
 
-	public Map getClientSelected() {
-		return (Map) tblClient.getSelectionModel().getSelectedItem();
-	}
+	public void displayClientSelected() {
+		if (StringUtils.isEmpty(name)) {
+			setTxtName(getName());
+			setTxtSurname(getSurname());
+			setTxtAddress(getAddress());
+			setTxtNationality(getNationality());
+			idSelected = getIdclient();
 
-	public void displayClientSelected(Map clientSelected) {
-		if (clientSelected != null) {
-			setTxtName(clientSelected.get(1).toString());
-			setTxtSurname(clientSelected.get(2).toString());
-			setTxtAddress(clientSelected.get(3).toString());
-			setTxtNationality(clientSelected.get(4).toString());
-			idSelected = Integer.parseInt(clientSelected.get(0).toString());
-
-			showAccounts(idSelected);
 		}
 	}
 
 	@FXML
 	void showAccountSelected() {
-		accountService.showAccountSelected();
+		displayAccountSelected();
 
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<Map> getAccounts() {
-		return (List<Map>) tblAccount.getSelectionModel().getSelectedItem();
-	}
-
-	public void displayAccountSelected(Map accountSelected) {
-		if (accountSelected != null) {
-			setTxtConcept(accountSelected.get(1).toString());
-			setTxtAccountType(Integer.parseInt(accountSelected.get(2).toString()));
-			setTxtAccountStatus(Integer.parseInt(accountSelected.get(3).toString()));
-			idAccountSelected = Integer.parseInt(accountSelected.get(0).toString());
+	public void displayAccountSelected() {
+		if (StringUtils.isEmpty(concept)) {
+			setTxtConcept(concept);
+			setTxtAccountType(Integer.toString(accountType));
+			setTxtAccountStatus(Integer.toString(accountStatus));
 		}
 	}
 
-	@FXML
-	public void updateTable() {
-		clientService.updateClientTable();
-
-	}
-
-	public List<Client> getClients() {
-		return getAllClients();
-	}
-
-	public void updateClientTableView() {
-
-		ObservableList<Map<String, Object>> items = this.getClientData(2);
-		tblClient.getItems().addAll(items);
-		this.addClientColumns(tblClient);
-
-	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void addClientColumns(TableView<Map> tblClient) {
-
+	public void addClientColumns() {
 		TableColumn<Map, Integer> idColumn = new TableColumn<>("ID Cliente");
 		idColumn.setCellValueFactory(new MapValueFactory<>(idColumnKey));
 
@@ -344,24 +302,16 @@ public class MainView {
 				creationDateColumn);
 	}
 
-	public ObservableList<Map<String, Object>> getClientData(int size) {
-		ObservableList<Map<String, Object>> items = FXCollections.<Map<String, Object>>observableArrayList();
-
-		for (int i = 0; i < size; i++) {
-			Map<String, Object> map = new HashMap<>();
-			map.put(idColumnKey, getIdclient());
-			map.put(nameColumnKey, getName());
-			map.put(surnameColumnKey, getSurname());
-			map.put(addressColumnKey, getAddress());
-			map.put(nationalityColumnKey, getNationality());
-			map.put(creationDateColumnKey, getCreationDate());
-			items.add(map);
-		}
-		return items;
+	@FXML
+	void searchByIdClient() {
+		clientService.searchByIdClient(idclient);
 	}
 
-	public List<Client> getAllClients() {
-		return clientService.findAll();
+	public void clearClientFields() {
+		setTxtName("");
+		setTxtSurname("");
+		setTxtAddress("");
+		setTxtNationality("");
 	}
 
 	@FXML
@@ -369,7 +319,7 @@ public class MainView {
 		clientService.addClient();
 	}
 
-	public boolean isDataTocreateClient() {
+	public boolean isFilledClientCreateFields() {
 		String name = getTxtName().getText();
 		String surname = getTxtSurname().getText();
 		String address = getTxtAddress().getText();
@@ -381,9 +331,13 @@ public class MainView {
 			clientService.setSurname(surname);
 			clientService.setAddress(address);
 			clientService.setNationality(nationality);
-			return  true;
+			return true;
 		}
 		return false;
+	}
+
+	public void saveClient() {
+		clientService.save();
 	}
 
 	public void clearTableColumns() {
@@ -395,7 +349,8 @@ public class MainView {
 
 	@FXML
 	void updateClient() {
-		clientService.updateClient();
+
+		clientService.updateClientProcess();
 	}
 
 	public boolean isClientDataFilled() {
@@ -412,74 +367,105 @@ public class MainView {
 	}
 
 	public void refreshClient() {
-		clientService.updateClient(idSelected, getTxtName().getText(), getTxtSurname().getText(),
-				getTxtAddress().getText(), getTxtNationality().getText());
+		clientService.setIdClient(idSelected);
+		clientService.setName(getTxtName().getText());
+		clientService.setSurname(getTxtSurname().getText());
+		clientService.setAddress(getTxtAddress().getText());
+		clientService.setNationality(getTxtNationality().getText());
+		clientService.updateClient();
 	}
 
 	@FXML
 	void deleteClient() {
-		clientService.deleteClient();
+		if (!isDeleteClient()) {
+			System.out.println("Error al intentar borrar el cliente");
+		};
 	}
 
 	public boolean isDeleteClient() {
-		if (idSelected != 0) {
-			clientService.deleteByIdclient(idSelected);
+		if (StringUtils.isEmpty(concept)) {
+			clientService.deleteByIdclient(idaccount);
 			return true;
 		}
 		return false;
 	}
 
 	public void showAccounts(int idSelected) {
-		accountService.showAccounts(idSelected);
-	}
-
-	public List<Account> getAccountByIdClient(int idSelected) {
-		return accountService.getAccountByIdclient(idSelected);
-	}
-
-	
-	public void getAccountsByID(List<Map> accounts) {
-
-		ObservableList<Map<String, Object>> items = this.getAccountData(2);
+		accountService.getAccountByIdclient(idSelected);
+		if (StringUtils.isEmpty(concept)) {
+			clearAccountFields();
+		}
+		ObservableList<Map<String, Object>> items = this.getAccountData();
 		tblAccount.getItems().addAll(items);
-		this.addAccountColumns(tblAccount);
+		this.getAccountsByID(tblAccount);
+
 	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void addAccountColumns(TableView<Map> tblAccount) {
-		
-		TableColumn<Map, Integer> idaccountColumn = new TableColumn<>("ID Cuenta");
-		idaccountColumn.setCellValueFactory(new MapValueFactory<>("idaccount"));
 
-		TableColumn<Map, String> conceptColumn = new TableColumn<>("Concepto");
-		conceptColumn.setCellValueFactory(new MapValueFactory<>("concept"));
-
-		TableColumn<Map, Integer> accountTypeColumn = new TableColumn<>("Tipo de Cuenta");
-		accountTypeColumn.setCellValueFactory(new MapValueFactory<>("accountType"));
-
-		TableColumn<Map, Integer> accountStatusColumn = new TableColumn<>("Estado");
-		accountStatusColumn.setCellValueFactory(new MapValueFactory<>("accountStatus"));
-
-		TableColumn<Map, String> creationDateColumn = new TableColumn<>("Fecha de Creación");
-		creationDateColumn.setCellValueFactory(new MapValueFactory<>("creationDate"));
-
-		tblAccount.getColumns().setAll(idaccountColumn, conceptColumn, accountTypeColumn, accountStatusColumn,
-				creationDateColumn);
-	}
-	
-	public ObservableList<Map<String, Object>> getAccountData(int size) {
+	public ObservableList<Map<String, Object>> getAccountData() {
 		ObservableList<Map<String, Object>> items = FXCollections.<Map<String, Object>>observableArrayList();
 
-		for (int i = 0; i < size; i++) {
-			Map<String, Object> map = new HashMap<>();
-			map.put(idAccountColumnKey, getIdAccount());
-			map.put(conceptColumnKey, getConcept());
-			map.put(accountTypeColumnKey, getAccountType());
-			map.put(accountStatusColumnKey, getAccountStatus());
-			map.put(creationDateAccountColumnKey, getCreationDate());
-		
-			items.add(map);
-		}
+		Map<String, Object> map = new HashMap<>();
+		map.put(idAccountColumnKey, idclient);
+		map.put(conceptColumnKey, getConcept());
+		map.put(accountTypeColumnKey, accountType);
+		map.put(accountStatusColumnKey, accountStatus);
+		map.put(creationDateAccountColumnKey, creationDate);
+
+		items.add(map);
+
+		return items;
+	}
+
+	public void clearAccountFields() {
+		setTxtConcept("");
+		setTxtAccountStatus("");
+		setTxtAccountType("");
+	}
+
+	public void getAccountByIdClient(int idSelected) {
+		accountService.getAccountByIdclient(idSelected);
+	}
+
+	@FXML
+	public void updateTable() {
+		ObservableList<Map<String, Object>> items = this.getClientData();
+		tblClient.getItems().addAll(items);
+		this.addClientColumns();
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void getAccountsByID(TableView<Map> tblAccount) {
+
+		TableColumn<Map, Integer> idColumn = new TableColumn<>("ID Cuenta");
+		idColumn.setCellValueFactory(new MapValueFactory<>(idAccountColumnKey));
+
+		TableColumn<Map, String> conceptColumn = new TableColumn<>("Concepto");
+		conceptColumn.setCellValueFactory(new MapValueFactory<>(conceptColumnKey));
+
+		TableColumn<Map, Integer> accountTypeColumn = new TableColumn<>("Tipo de cuenta");
+		accountTypeColumn.setCellValueFactory(new MapValueFactory<>(accountTypeColumnKey));
+
+		TableColumn<Map, Integer> accountStatusColumn = new TableColumn<>("Estado de la cuenta");
+		accountStatusColumn.setCellValueFactory(new MapValueFactory<>(accountStatusColumnKey));
+
+		TableColumn<Map, String> creationDateColumn = new TableColumn<>("Fecha de creación");
+		creationDateColumn.setCellValueFactory(new MapValueFactory<>(creationDateAccountColumnKey));
+
+		tblAccount.getColumns().setAll(idColumn, conceptColumn, accountTypeColumn, accountStatusColumn,
+				creationDateColumn);
+	}
+
+	public ObservableList<Map<String, Object>> getClientData() {
+		ObservableList<Map<String, Object>> items = FXCollections.<Map<String, Object>>observableArrayList();
+
+		Map<String, Object> map = new HashMap<>();
+		map.put(idColumnKey, idclient);
+		map.put(nameColumnKey, name);
+		map.put(surnameColumnKey, surname);
+		map.put(addressColumnKey, address);
+		map.put(nationalityColumnKey, nationality);
+		items.add(map);
+
 		return items;
 	}
 
@@ -492,6 +478,7 @@ public class MainView {
 		String concept = getTxtConcept().getText();
 		int accountType = Integer.parseInt(getTxtAccountType().getText());
 		int accountStatus = Integer.parseInt(getTxtAccountStatus().getText());
+		int idAccountSelected = idaccount;
 
 		if (idAccountSelected != 0 || StringUtils.isEmpty(concept) || StringUtils.isEmpty(accountType)
 				|| StringUtils.isEmpty(accountStatus)) {
@@ -501,8 +488,13 @@ public class MainView {
 	}
 
 	public void refreshAccount() {
-		accountService.updateAccount(idAccountSelected, getTxtConcept().getText(),
-				Integer.parseInt(getTxtAccountType().getText()), Integer.parseInt(getTxtAccountStatus().getText()));
+		accountService.refreshAccount();
+	}
+
+	public void updateAccountData() {
+		setConcept(getTxtConcept().getText());
+		setAccountType(Integer.parseInt(getTxtAccountType().getText()));
+		setAccountStatus(Integer.parseInt(getTxtAccountStatus().getText()));
 	}
 
 	public int getIdAccountSelected() {
@@ -511,27 +503,23 @@ public class MainView {
 
 	@FXML
 	void addAccount() {
-		accountService.saveAccount();
+		accountService.addAccount();
 	}
 
 	public void saveAccountData() {
-		Account account = new Account(getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()),
-				Integer.parseInt(getTxtAccountStatus().getText()));
-		accountService.save(account);
-		accountData.add(account);
+		updateAccountData();
+		accountService.save();
+
 	}
 
 	@FXML
 	void deleteAccount() {
-		System.out.println(idAccountSelected);
-		if (idAccountSelected != 0) {
-			accountService.deleteByIdaccount(idAccountSelected);
-			showAccounts(idAccountSelected);
-		}
+
+		accountService.deleteAccount();
 	}
 
 	public void deleteByIdAccount(int idAccountSelected) {
-		accountService.deleteByIdaccount(idAccountSelected);
+		accountService.deleteByIdaccount(idaccount);
 	}
 
 }

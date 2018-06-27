@@ -3,7 +3,6 @@ package creditLine.persistence.daos;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import creditLine.persistence.entities.Client;
@@ -11,7 +10,7 @@ import creditLine.persistence.entities.Client;
 import java.util.List;
 
 
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional()
 public interface ClientRepository extends CrudRepository<Client, Long> {
 
     List<Client> findAll();
@@ -21,6 +20,8 @@ public interface ClientRepository extends CrudRepository<Client, Long> {
 	void updateClient(int idclient,String name, String surname, String address, String nationality);
 	
 	int deleteByIdclient(int idclient);
+	
+	Client findByIdclient(int idclient);
 	
 
 }

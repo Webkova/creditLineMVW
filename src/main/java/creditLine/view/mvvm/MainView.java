@@ -1,4 +1,4 @@
-package creditLine.view.mvp_pm;
+package creditLine.view.mvvm;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,8 +8,12 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import creditLine.services.mvp_pm.AccountService;
-import creditLine.services.mvp_pm.ClientService;
+import creditLine.services.mvvm.AccountService;
+import creditLine.services.mvvm.ClientService;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -70,11 +74,17 @@ public class MainView {
 	private String address;
 	private String nationality;
 	
-	private int idaccount;
-	private String concept;
-	private int accountType;
-	private int accountStatus;
-	private String creationDate;
+	private IntegerProperty idclientBinder = new SimpleIntegerProperty();
+	private StringProperty nameBinder = new SimpleStringProperty();
+	private StringProperty surnameBinder = new SimpleStringProperty();
+	private StringProperty addressBinder = new SimpleStringProperty();
+	private StringProperty nationalityBinder = new SimpleStringProperty();
+	
+	private IntegerProperty idaccountBinder = new SimpleIntegerProperty();
+	private StringProperty conceptBinder = new SimpleStringProperty();
+	private IntegerProperty accountTypeBinder = new SimpleIntegerProperty();
+	private IntegerProperty accountStatusBinder = new SimpleIntegerProperty();
+	private StringProperty creationDateBinder = new SimpleStringProperty();
 	
 	private final String idColumnKey = "idclient";
 	private final String nameColumnKey = "name";
@@ -90,47 +100,46 @@ public class MainView {
 	private final String creationDateAccountColumnKey = "creationDate";
 	
 	
-		
-	public int getIdaccount() {
-		return idaccount;
+	public IntegerProperty getIdclientBinder() {
+		return idclientBinder;
 	}
 
-	public void setIdaccount(int idaccount) {
-		this.idaccount = idaccount;
+	public void setIdclientBinder(IntegerProperty idclientBinder) {
+		this.idclientBinder = idclientBinder;
 	}
 
-	public String getConcept() {
-		return concept;
+	public StringProperty getNameBinder() {
+		return nameBinder;
 	}
 
-	public void setConcept(String concept) {
-		this.concept = concept;
+	public void setNameBinder(StringProperty nameBinder) {
+		this.nameBinder = nameBinder;
 	}
 
-	public int getAccountType() {
-		return accountType;
+	public StringProperty getSurnameBinder() {
+		return surnameBinder;
 	}
 
-	public void setAccountType(int accountType) {
-		this.accountType = accountType;
+	public void setSurnameBinder(StringProperty surnameBinder) {
+		this.surnameBinder = surnameBinder;
 	}
 
-	public int getAccountStatus() {
-		return accountStatus;
+	public StringProperty getAddressBinder() {
+		return addressBinder;
 	}
 
-	public void setAccountStatus(int accountStatus) {
-		this.accountStatus = accountStatus;
+	public void setAddressBinder(StringProperty addressBinder) {
+		this.addressBinder = addressBinder;
 	}
 
-	public String getCreationDate() {
-		return creationDate;
+	public StringProperty getNationalityBinder() {
+		return nationalityBinder;
 	}
 
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
+	public void setNationalityBinder(StringProperty nationalityBinder) {
+		this.nationalityBinder = nationalityBinder;
 	}
-
+	
 	public int getIdclient() {
 		return idclient;
 	}
@@ -247,7 +256,16 @@ public class MainView {
 
 	@PostConstruct
 	public void init() {
-
+		nameBinder.bindBidirectional(clientService.getNameBinder());
+		surnameBinder.bindBidirectional(clientService.getSurnameBinder());
+		addressBinder.bindBidirectional(clientService.getAddressBinder());
+		nationalityBinder.bindBidirectional(clientService.getNationalityBinder());
+		
+		idaccountBinder.bindBidirectional(accountService.getIdaccount());
+		conceptBinder.bindBidirectional(accountService.getConcept());
+		accountStatusBinder.bindBidirectional(accountService.getAccountStatus());
+		accountTypeBinder.bindBidirectional(accountService.getAccountType());
+		creationDateBinder.bindBidirectional(accountService.getCreationDate());
 	}
 
 	@FXML
@@ -257,7 +275,7 @@ public class MainView {
 
 
 	public void displayClientSelected() {
-		if (StringUtils.isEmpty(name)) {
+		if (StringUtils.isEmpty(nameBinder)) {
 			setTxtName(getName());
 			setTxtSurname(getSurname());
 			setTxtAddress(getAddress());
@@ -276,10 +294,10 @@ public class MainView {
 
 
 	public void displayAccountSelected() {
-		if (StringUtils.isEmpty(concept)) {
-			setTxtConcept(concept);
-			setTxtAccountType(Integer.toString(accountType));
-			setTxtAccountStatus(Integer.toString(accountStatus));
+		if (StringUtils.isEmpty(conceptBinder)) {
+			setTxtConcept(conceptBinder.getValue());
+			setTxtAccountType(Integer.toString(accountTypeBinder.getValue()));
+			setTxtAccountStatus(Integer.toString(accountStatusBinder.getValue()));
 		}
 	}
 
@@ -312,18 +330,13 @@ public class MainView {
     @FXML
     void searchByIdClient() {
     	clientService.findByIdclient(Integer.parseInt(txtSearchById.getText()));
-    	
-     	if (StringUtils.isEmpty(clientService.getName())) {
+
+    	if (StringUtils.isEmpty(nameBinder)) {
     		clearClientFields(); 
-    	}else {
-    		setName(clientService.getName());
-        	setSurname(clientService.getSurname());
-        	setAddress(clientService.getAddress());
-        	setNationality(clientService.getNationality());
     	}
 
     	addClientColumns(tblClient);
-    	showAccounts(idclient);
+    	showAccounts(idclientBinder.getValue());
     	
     }
     
@@ -351,10 +364,10 @@ public class MainView {
 
 		if (!StringUtils.isEmpty(name) || !StringUtils.isEmpty(surname) || !StringUtils.isEmpty(address)
 				|| !StringUtils.isEmpty(nationality)) {
-			clientService.setName(name);
-			clientService.setSurname(surname);
-			clientService.setAddress(address);
-			clientService.setNationality(nationality);
+			nameBinder.setValue(name);
+			surnameBinder.setValue(surname);
+			addressBinder.setValue(address);
+			nationalityBinder.setValue(nationality);
 			return true;
 		}
 		return false;
@@ -393,25 +406,25 @@ public class MainView {
 	}
 
 	public void refreshClient() {
-		clientService.setIdClient(idSelected);
-		clientService.setName(getTxtName().getText());
-		clientService.setSurname(getTxtSurname().getText());
-		clientService.setAddress(getTxtAddress().getText());
-		clientService.setNationality(getTxtNationality().getText());
+		idclientBinder.setValue(idSelected);
+		nameBinder.setValue(getTxtName().getText());
+		surnameBinder.setValue(getTxtSurname().getText());
+		addressBinder.setValue(getTxtAddress().getText());
+		nationalityBinder.setValue(getTxtNationality().getText());
 		clientService.updateClient();
 	}
 
 	@FXML
 	void deleteClient() {
-		if (StringUtils.isEmpty(idclient)) {
-			clientService.deleteByIdclient(idaccount);
+		if (StringUtils.isEmpty(conceptBinder)) {
+			clientService.deleteByIdclient(idaccountBinder.getValue());
 		}
-
 	}
 
+
 	public void showAccounts(int idSelected) {
-		accountService.getAccountByIdclient(idaccount);
-		if (StringUtils.isEmpty(concept)){
+		accountService.getAccountByIdclient(idaccountBinder.getValue());
+		if (StringUtils.isEmpty(conceptBinder)){
 			clearAccountFields();
 		}
 		ObservableList<Map<String, Object>> items = this.getAccountData();
@@ -424,12 +437,12 @@ public class MainView {
 		ObservableList<Map<String, Object>> items = FXCollections.<Map<String, Object>>observableArrayList();
 
 			Map<String, Object> map = new HashMap<>();
-			map.put(idAccountColumnKey, idclient);
-			map.put(conceptColumnKey, getConcept());
-			map.put(accountTypeColumnKey, accountType);
-			map.put(accountStatusColumnKey, accountStatus);
-			map.put(creationDateAccountColumnKey, creationDate);
-
+			map.put(idAccountColumnKey, idclientBinder.getValue());
+			map.put(conceptColumnKey, conceptBinder.getValue());
+			map.put(accountTypeColumnKey, accountTypeBinder.getValue());
+			map.put(accountStatusColumnKey, accountStatusBinder.getValue());
+			map.put(creationDateAccountColumnKey, creationDateBinder.getValue());
+			//map.put(creationDateColumnKey, getCreationDate());
 			items.add(map);
 		
 		return items;
@@ -478,11 +491,11 @@ public class MainView {
 		ObservableList<Map<String, Object>> items = FXCollections.<Map<String, Object>>observableArrayList();
 
 			Map<String, Object> map = new HashMap<>();
-			map.put(idColumnKey, idclient);
-			map.put(nameColumnKey, name);
-			map.put(surnameColumnKey, surname);
-			map.put(addressColumnKey, address);
-			map.put(nationalityColumnKey, nationality);
+			map.put(idColumnKey, idclientBinder.getValue());
+			map.put(nameColumnKey, nameBinder.getValue());
+			map.put(surnameColumnKey, surnameBinder.getValue());
+			map.put(addressColumnKey, addressBinder.getValue());
+			map.put(nationalityColumnKey, nationalityBinder.getValue());
 			items.add(map);
 		
 		return items;
@@ -506,15 +519,15 @@ public class MainView {
 	}
 	
 	public void refreshAccount() {
-		setIdaccount(idAccountSelected);
-		updateAccountData();
+		idaccountBinder.setValue(idAccountSelected);
+		updateAccountDataBinder();
 		accountService.updateAccount();
 	}
 	
-	public void updateAccountData() {
-		setConcept(getTxtConcept().getText());
-		setAccountType(Integer.parseInt(getTxtAccountType().getText()));
-		setAccountStatus(Integer.parseInt(getTxtAccountStatus().getText()));
+	public void updateAccountDataBinder() {
+		conceptBinder.setValue(getTxtConcept().getText());
+		accountTypeBinder.setValue(Integer.parseInt(getTxtAccountType().getText()));
+		accountStatusBinder.setValue(Integer.parseInt(getTxtAccountStatus().getText()));
 	}
 	
 	public int getIdAccountSelected() {
@@ -530,7 +543,7 @@ public class MainView {
 	}
 	
 	public void saveAccountData() {
-		updateAccountData();
+		updateAccountDataBinder();
 		accountService.save();
 
 	}
@@ -538,14 +551,14 @@ public class MainView {
 	@FXML
 	void deleteAccount() {
 		
-		if (StringUtils.isEmpty(idaccount)) {
+		if (StringUtils.isEmpty(idaccountBinder)) {
 			accountService.deleteByIdaccount(idAccountSelected);
-			showAccounts(idaccount);
+			showAccounts(idaccountBinder.getValue());
 		}
 	}
 	
 	public void deleteByIdAccount(int idAccountSelected) {
-		accountService.deleteByIdaccount(idaccount);
+		accountService.deleteByIdaccount(idaccountBinder.getValue());
 	}
 	
 }

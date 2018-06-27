@@ -1,4 +1,4 @@
-package creditLine.view.mvp_sc;
+package creditLine.view.mvc;
 
 import javax.annotation.PostConstruct;
 
@@ -7,8 +7,8 @@ import org.springframework.util.StringUtils;
 
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
-import creditLine.services.mvp_sc.AccountService;
-import creditLine.services.mvp_sc.ClientService;
+import creditLine.services.mvc.AccountService;
+import creditLine.services.mvc.ClientService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
