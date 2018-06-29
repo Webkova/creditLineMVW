@@ -11,8 +11,8 @@ import org.springframework.util.StringUtils;
 import creditLine.listeners.HandleEvent;
 import creditLine.persistence.daos.AccountRepository;
 import creditLine.persistence.entities.Account;
-import creditLine.services.mvc.AccountService;
-import creditLine.view.mvc.MainView;
+import creditLine.services.AccountService;
+import creditLine.view.MainView;
 
 
 @Service

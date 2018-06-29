@@ -6,9 +6,9 @@ public interface AccountService {
 	
 	Account save(Account account);
 	
-	void saveAccount(); 
+	void addAccount(Account account); 
 	
-	Account getAccountByIdclient(int idclient);
+	void getAccountByIdclient(int idclient);
 
 	void updateAccount(int idaccount, String concept, int accountType, int accountStatus);
 

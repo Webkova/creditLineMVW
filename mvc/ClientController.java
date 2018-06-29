@@ -15,8 +15,8 @@ import creditLine.listeners.HandleEvent;
 import creditLine.persistence.daos.ClientRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
-import creditLine.services.mvc.ClientService;
-import creditLine.view.mvc.MainView;
+import creditLine.services.ClientService;
+import creditLine.view.MainView;
 
 @Service
 @Transactional

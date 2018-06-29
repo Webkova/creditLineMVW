@@ -3,12 +3,15 @@ package creditLine.view.mvc;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
+import creditLine.listeners.HandleEvent;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
 import creditLine.services.mvc.AccountService;
 import creditLine.services.mvc.ClientService;
+import creditLine.utils.UiUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,14 +21,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 
-public class MainView {
+public class MainView implements ApplicationListener<HandleEvent> {
 
 	@Autowired
 	private AccountService accountService;
 
 	@Autowired
 	private ClientService clientService;
-	
+
 	@FXML
 	private HBox hboxTblAccounts;
 
@@ -55,8 +58,8 @@ public class MainView {
 
 	@FXML
 	private TextField txtAccountStatus;
-	
-	@FXML 
+
+	@FXML
 	private TextField txtSearchById;
 
 	private ObservableList<Account> accountData;
@@ -66,11 +69,16 @@ public class MainView {
 	private int idSelected = 0;
 
 	private int idAccountSelected = 0;
-	
+
 	private Client clientSelected;
-	
+
 	private Account accountSelected;
-		
+
+	private UiUtils uiAlert = new UiUtils();
+
+	private final String ALERT_HEADER = "Falta campo obligatorio";
+	private final String ALERT_BODY = "Por favor, introduce todos los campos obligatorios";
+
 	public void setClientService(ClientService clientService) {
 		this.clientService = clientService;
 	}
@@ -146,7 +154,7 @@ public class MainView {
 
 	@PostConstruct
 	public void init() {
-		
+
 	}
 
 	@FXML
@@ -166,7 +174,7 @@ public class MainView {
 			setTxtAddress(clientSelected.getAddress());
 			setTxtNationality(clientSelected.getNationality());
 			idSelected = clientSelected.getIdclient();
-			
+
 		}
 	}
 
@@ -193,7 +201,7 @@ public class MainView {
 	public void updateTable(Client clientes) {
 		Client clients = clientes;
 		clientData = FXCollections.observableArrayList(clients);
-		
+
 		TableColumn<Client, String> idColumn = new TableColumn<>("ID Cliente");
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("idclient"));
 
@@ -211,39 +219,47 @@ public class MainView {
 
 		TableColumn<Client, String> creationDateColumn = new TableColumn<>("Fecha creación");
 		creationDateColumn.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
-		
+
 		tblClient.getColumns().setAll(idColumn, nameColumn, surnameColumn, addressColumn, nationalityColumn,
 				creationDateColumn);
 
 		tblClient.setItems(clientData);
 		idColumn.setSortType(TableColumn.SortType.DESCENDING);
 	}
-	
-	
-    @FXML
-    Client searchByIdClient() {
-    	clientSelected = clientService.findByIdclient(Integer.parseInt(txtSearchById.getText()));
-    	if (StringUtils.isEmpty(clientSelected)) {
-    		clearClientFields(); 
-    	}
-    	updateTable(clientSelected);
-    	showAccounts(clientSelected.getIdclient());
-    	return clientSelected;
-    }
-    
-    public void clearClientFields() {
-    	setTxtName("");
-    	setTxtSurname("");
-    	setTxtAddress("");
-    	setTxtNationality("");
-    }
+
+	@FXML
+	Client searchByIdClient() {
+		clientService.findByIdclient(Integer.parseInt(txtSearchById.getText()));
+		if (StringUtils.isEmpty(clientSelected)) {
+			clearClientFields();
+		}
+		updateTable(clientSelected);
+		showAccounts(clientSelected.getIdclient());
+		return clientSelected;
+	}
+
+	public void clearClientFields() {
+		setTxtName("");
+		setTxtSurname("");
+		setTxtAddress("");
+		setTxtNationality("");
+	}
 
 	@FXML
 	public void addClient() {
-		clientService.addClient();
+
+		Client clientValidated = validateClient();
+
+		if (!StringUtils.isEmpty(clientValidated)) {
+			clientService.addClient(clientValidated);
+			clientData.add(clientValidated);
+			clearTableColumns();
+		} else {
+			uiAlert.errorAlert("Error al crear un cliente", ALERT_HEADER,ALERT_BODY);
+		}
 	}
 
-	public Client createClient() {
+	public Client validateClient() {
 		String name = getTxtName().getText();
 		String surname = getTxtSurname().getText();
 		String address = getTxtAddress().getText();
@@ -254,11 +270,6 @@ public class MainView {
 			return new Client(name, surname, address, nationality);
 		}
 		return null;
-	}
-
-	public void saveClient(Client client) {
-		clientService.save(client);
-		clientData.add(client);
 	}
 
 	public void clearTableColumns() {
@@ -296,29 +307,24 @@ public class MainView {
 
 	@FXML
 	void deleteClient() {
-		clientService.deleteClient();
-	}
-
-	public boolean isDeleteClient() {
 		if (idSelected != 0) {
 			clientService.deleteByIdclient(idSelected);
-			return true;
 		}
-		return false;
 	}
+
 
 	public void showAccounts(int idSelected) {
 		accountService.showAccounts(idSelected);
 	}
-	
-    public void clearAccountFields() {
-    	setTxtConcept("");
-    	setTxtAccountStatus("");
-    	setTxtAccountType("");
-    }
+
+	public void clearAccountFields() {
+		setTxtConcept("");
+		setTxtAccountStatus("");
+		setTxtAccountType("");
+	}
 
 	public Account getAccountByIdClient(int idSelected) {
-		accountSelected = accountService.getAccountByIdclient(idSelected);
+		accountService.getAccountByIdclient(idSelected);
 		return accountSelected;
 	}
 
@@ -360,46 +366,79 @@ public class MainView {
 		int accountType = Integer.parseInt(getTxtAccountType().getText());
 		int accountStatus = Integer.parseInt(getTxtAccountStatus().getText());
 
-		if (idAccountSelected != 0 || StringUtils.isEmpty(concept) || StringUtils.isEmpty(accountType)
-				|| StringUtils.isEmpty(accountStatus)) {
+		if (idAccountSelected != 0 || !StringUtils.isEmpty(concept) || !StringUtils.isEmpty(accountType)
+				|| !StringUtils.isEmpty(accountStatus)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void refreshAccount() {
-		accountService.updateAccount(idAccountSelected, getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()), 
-				Integer.parseInt(getTxtAccountStatus().getText()));
+		accountService.updateAccount(idAccountSelected, getTxtConcept().getText(),
+				Integer.parseInt(getTxtAccountType().getText()), Integer.parseInt(getTxtAccountStatus().getText()));
 	}
-	
+
 	public int getIdAccountSelected() {
 		return idAccountSelected;
 	}
-	
-	
+
 	@FXML
 	void addAccount() {
-		accountService.saveAccount();
+		if (isFilledAccountData()) {
+			System.out.println("Entra aquí: ");
+			saveAccountData();
+		}
 	}
-	
+
 	public void saveAccountData() {
-		Account account = new Account(getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()), 
+		Account account = new Account(getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()),
 				Integer.parseInt(getTxtAccountStatus().getText()));
-		accountService.save(account);
-		accountData.add(account);
+		accountService.addAccount(account);
+		//accountData.add(account);
 	}
 
 	@FXML
 	void deleteAccount() {
-		
+
 		if (idAccountSelected != 0) {
 			accountService.deleteByIdaccount(idAccountSelected);
 			showAccounts(idAccountSelected);
 		}
 	}
-	
+
 	public void deleteByIdAccount(int idAccountSelected) {
 		accountService.deleteByIdaccount(accountSelected.getIdaccount());
 	}
-	
+
+	@Override
+	public void onApplicationEvent(HandleEvent event) {
+		final Client client = event.getClient();
+		final Account account = event.getAccount();
+
+		if (event.getEventType().equals("creation")) {
+			uiAlert.informationAlert("Creación de Cliente", "Cliente insertado", "El cliente: " + client.getName() + ""
+					+ client.getSurname() + "se ha insertado correctamente en la base de datos");
+		} else if (event.getEventType().equals("update")) {
+			uiAlert.informationAlert("Actualización de Client", "Cliente actualizado", "El cliente: " + client.getName() + ""
+					+ client.getSurname() + "se ha actualizado correctamente en la base de datos");
+		} else if (event.getEventType().equals("read")) {
+			clientSelected = client;
+			System.out.println("El cliente es: " + event.getClient());
+		} else if (event.getEventType().equals("delete")) {
+			uiAlert.informationAlert("Eliminación de Client", "Cliente borrado", "El cliente: " + event.getId() 
+			+ "se ha eliminado correctamente en la base de datos");
+		} else if (event.getEventType().equals("acc_creation")) {
+			uiAlert.informationAlert("Creación de Cuenta", "Cuenta insertada", "La cuenta: " + account.getConcept() + ""
+					+ "se ha insertado correctamente en la base de datos");
+		} else if(event.getEventType().equals("acc_update")) {
+			uiAlert.informationAlert("Actualización de la Cuenta", "Cuenta actualizada", "La cuenta: " + account.getConcept() + ""
+					+ "se ha actualizado correctamente en la base de datos");
+		} else if (event.getEventType().equals("acc_read")) {
+			accountSelected = account;
+			System.out.println("La cuenta es: " + event.getAccount());
+		} else if (event.getEventType().equals("acc_delete") ) {
+			uiAlert.informationAlert("Eliminación de Cuenta", "cuenta borrada", "La cuenta: " + event.getId() 
+			+ "se ha eliminado correctamente en la base de datos");
+		}
+	}
 }

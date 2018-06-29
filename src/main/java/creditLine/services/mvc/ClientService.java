@@ -12,18 +12,16 @@ public interface ClientService {
 
 	List<Client> findAll();	
 	
-	int deleteByIdclient(int idclient);
-	
-	void deleteClient();
+	void deleteByIdclient(int idclient);
 
 	void updateClient(int idclient, String name, String surname, String address, String nationality);
 	
 	
 	void showClientSelected();
 	
-	void addClient();
+	void addClient(Client clientValidated);
 
-	Client findByIdclient(int idclient);
+	void findByIdclient(int idclient);
 
 
 	
