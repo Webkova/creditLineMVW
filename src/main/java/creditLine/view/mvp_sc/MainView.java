@@ -25,7 +25,7 @@ public class MainView {
 
 	@Autowired
 	private ClientService clientService;
-	
+
 	@FXML
 	private HBox hboxTblAccounts;
 
@@ -55,8 +55,8 @@ public class MainView {
 
 	@FXML
 	private TextField txtAccountStatus;
-	
-	@FXML 
+
+	@FXML
 	private TextField txtSearchById;
 
 	private ObservableList<Account> accountData;
@@ -66,11 +66,11 @@ public class MainView {
 	private int idSelected = 0;
 
 	private int idAccountSelected = 0;
-	
+
 	private Client clientSelected;
-	
+
 	private Account accountSelected;
-		
+
 	public void setClientService(ClientService clientService) {
 		this.clientService = clientService;
 	}
@@ -146,7 +146,7 @@ public class MainView {
 
 	@PostConstruct
 	public void init() {
-		
+
 	}
 
 	@FXML
@@ -166,7 +166,7 @@ public class MainView {
 			setTxtAddress(clientSelected.getAddress());
 			setTxtNationality(clientSelected.getNationality());
 			idSelected = clientSelected.getIdclient();
-			
+
 		}
 	}
 
@@ -193,7 +193,7 @@ public class MainView {
 	public void updateTable(Client clientes) {
 		Client clients = clientes;
 		clientData = FXCollections.observableArrayList(clients);
-		
+
 		TableColumn<Client, String> idColumn = new TableColumn<>("ID Cliente");
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("idclient"));
 
@@ -211,31 +211,36 @@ public class MainView {
 
 		TableColumn<Client, String> creationDateColumn = new TableColumn<>("Fecha creación");
 		creationDateColumn.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
-		
+
 		tblClient.getColumns().setAll(idColumn, nameColumn, surnameColumn, addressColumn, nationalityColumn,
 				creationDateColumn);
 
 		tblClient.setItems(clientData);
 		idColumn.setSortType(TableColumn.SortType.DESCENDING);
 	}
-	
-	
-    @FXML
-    Client searchByIdClient() {
-    	clientSelected = clientService.findByIdclient(Integer.parseInt(txtSearchById.getText()));
-    	if (StringUtils.isEmpty(clientSelected)) {
-    		clearClientFields(); 
-    	}
-    	updateTable(clientSelected);
-    	showAccounts(clientSelected.getIdclient());
-    	return clientSelected;
-    }
-    
-    public void clearClientFields() {
-    	setTxtName("");
-    	setTxtSurname("");
-    	setTxtAddress("");
-    	setTxtNationality("");
+
+	@FXML
+	Client searchByIdClient() {
+		if (validateClientData()) {
+			clientSelected = clientService.findByIdclient(Integer.parseInt(txtSearchById.getText()));
+		} else {
+			clearClientFields();
+		}
+		updateTable(clientSelected);
+		showAccounts(clientSelected.getIdclient());
+		return clientSelected;
+	}
+
+	public void clearClientFields() {
+		setTxtName("");
+		setTxtSurname("");
+		setTxtAddress("");
+		setTxtNationality("");
+	}
+
+	public Client createClient() {
+		return new Client(getTxtName().getText(), getTxtSurname().getText(), getTxtAddress().getText(), 
+			getTxtNationality().getText());
     }
 
 	@FXML
@@ -243,7 +248,7 @@ public class MainView {
 		clientService.addClient();
 	}
 
-	public Client createClient() {
+	public boolean validateClientData() {
 		String name = getTxtName().getText();
 		String surname = getTxtSurname().getText();
 		String address = getTxtAddress().getText();
@@ -251,9 +256,9 @@ public class MainView {
 
 		if (!StringUtils.isEmpty(name) || !StringUtils.isEmpty(surname) || !StringUtils.isEmpty(address)
 				|| !StringUtils.isEmpty(nationality)) {
-			return new Client(name, surname, address, nationality);
+			return true;
 		}
-		return null;
+		return false;
 	}
 
 	public void saveClient(Client client) {
@@ -310,12 +315,12 @@ public class MainView {
 	public void showAccounts(int idSelected) {
 		accountService.showAccounts(idSelected);
 	}
-	
-    public void clearAccountFields() {
-    	setTxtConcept("");
-    	setTxtAccountStatus("");
-    	setTxtAccountType("");
-    }
+
+	public void clearAccountFields() {
+		setTxtConcept("");
+		setTxtAccountStatus("");
+		setTxtAccountType("");
+	}
 
 	public Account getAccountByIdClient(int idSelected) {
 		accountSelected = accountService.getAccountByIdclient(idSelected);
@@ -366,24 +371,23 @@ public class MainView {
 		}
 		return false;
 	}
-	
+
 	public void refreshAccount() {
-		accountService.updateAccount(idAccountSelected, getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()), 
-				Integer.parseInt(getTxtAccountStatus().getText()));
+		accountService.updateAccount(idAccountSelected, getTxtConcept().getText(),
+				Integer.parseInt(getTxtAccountType().getText()), Integer.parseInt(getTxtAccountStatus().getText()));
 	}
-	
+
 	public int getIdAccountSelected() {
 		return idAccountSelected;
 	}
-	
-	
+
 	@FXML
 	void addAccount() {
 		accountService.saveAccount();
 	}
-	
+
 	public void saveAccountData() {
-		Account account = new Account(getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()), 
+		Account account = new Account(getTxtConcept().getText(), Integer.parseInt(getTxtAccountType().getText()),
 				Integer.parseInt(getTxtAccountStatus().getText()));
 		accountService.save(account);
 		accountData.add(account);
@@ -391,15 +395,15 @@ public class MainView {
 
 	@FXML
 	void deleteAccount() {
-		
+
 		if (idAccountSelected != 0) {
 			accountService.deleteByIdaccount(idAccountSelected);
 			showAccounts(idAccountSelected);
 		}
 	}
-	
+
 	public void deleteByIdAccount(int idAccountSelected) {
 		accountService.deleteByIdaccount(accountSelected.getIdaccount());
 	}
-	
+
 }

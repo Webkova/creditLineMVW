@@ -68,10 +68,9 @@ public class ClientController implements ClientService {
 
 	@Override
 	public void addClient() {
-		Client clientAdded = view.createClient(); 
-		
-		if (clientAdded != null) {
-			view.saveClient(clientAdded);
+	
+		if (view.validateClientData()) { 
+			view.saveClient(view.createClient());
 			view.clearTableColumns();
 		}	
 	}
