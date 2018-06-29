@@ -11,10 +11,6 @@ import creditLine.persistence.daos.AccountRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.services.mvp_pv.AccountService;
 import creditLine.view.mvp_pv.MainView;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 
 @Service
@@ -25,11 +21,11 @@ public class AccountController implements AccountService {
 	private final AccountRepository repository;
 	private MainView view;
 	
-	private IntegerProperty idaccount = new SimpleIntegerProperty();
-	private StringProperty concept = new SimpleStringProperty();
-	private IntegerProperty accountType = new SimpleIntegerProperty();
-	private IntegerProperty accountStatus = new SimpleIntegerProperty();
-	private StringProperty creationDate = new SimpleStringProperty();
+	private int idaccount;
+	private String concept;
+	private int accountType;
+	private int accountStatus;
+	private String creationDate;
 	
 	@Autowired
 	public AccountController(MainView view, AccountRepository repository) {
@@ -39,18 +35,19 @@ public class AccountController implements AccountService {
 	
 	@Override
 	public Account save() {
-		Account account = new Account(concept.getValue(), accountType.getValue(), accountStatus.getValue());
+		Account account = new Account(concept, accountType, accountStatus);
 		return repository.save(account);
 	}
 
 	@Override
 	public void updateAccount() {
-		repository.updateAccount(idaccount.getValue(), concept.getValue(), accountType.getValue(), 
-								accountStatus.getValue());
+		repository.updateAccount(view.getIdaccount(), view.getConcept(), view.getAccountType(), 
+								view.getAccountStatus());
 	}
 
 	@Override
 	public void addAccount() {
+		setAccountAttributes();
 		if (view.isFilledAccountData()) {
 			view.refreshAccount();
 		}		
@@ -59,11 +56,11 @@ public class AccountController implements AccountService {
 	@Override
 	public void getAccountByIdclient(int idclient){
 		Account account = repository.getAccountByIdclient(idclient);
-		idaccount.setValue(account.getIdaccount());
-		concept.setValue(account.getConcept());
-		accountStatus.setValue(account.getAccountStatus());
-		accountType.setValue(account.getAccountType());
-		creationDate.setValue(account.getCreationDate());
+		view.setIdaccount(account.getIdaccount());
+		view.setConcept(account.getConcept());
+		view.setAccountStatus(account.getAccountStatus());
+		view.setAccountType(account.getAccountType());
+		view.setCreationDate(account.getCreationDate());
 	}
 	
 	@Override
@@ -74,8 +71,9 @@ public class AccountController implements AccountService {
 
 	@Override
 	public void saveAccount() {
+		setAccountAttributes();
 		if (view.isFilledAccountData()) {
-			view.saveAccountData();
+			save();
 		}
 		
 	}
@@ -94,61 +92,34 @@ public class AccountController implements AccountService {
 		return repository.findByIdaccount(idaccount);
 	}
 
-	@Override
-	public IntegerProperty getIdaccount() {
-		return idaccount;
-	}
-
-	@Override
-	public void setIdaccount(IntegerProperty idaccount) {
-		this.idaccount = idaccount;
-	}
-
-	@Override
-	public StringProperty getConcept() {
-		return concept;
-	}
-
-	@Override
-	public void setConcept(StringProperty concept) {
-		this.concept = concept;
-	}
-
-	@Override
-	public IntegerProperty getAccountType() {
-		return accountType;
-	}
-
-	@Override
-	public void setAccountType(IntegerProperty accountType) {
-		this.accountType = accountType;
-	}
-
-	@Override
-	public IntegerProperty getAccountStatus() {
-		return accountStatus;
-	}
-
-	@Override
-	public void setAccountStatus(IntegerProperty accountStatus) {
-		this.accountStatus = accountStatus;
-	}
-
-	@Override
-	public StringProperty getCreationDate() {
-		return creationDate;
-	}
-
-	@Override
-	public void setCreationDate(StringProperty creationDate) {
-		this.creationDate = creationDate;
-	}
 	
 	@Override
 	public void refreshAccount() {
 		view.setIdaccount(view.getIdaccount());
-		view.updateAccountData();
+		setAccountAttributes();
 		updateAccount();
+	}
+
+	@Override
+	public void displayAccountSelected() {
+		view.setTxtConcept(view.getConcept());
+		view.setTxtAccountType(Integer.toString(view.getAccountType()));
+		view.setTxtAccountStatus(Integer.toString(view.getAccountStatus()));
+	}
+	
+	@Override
+	public void clearAccountFields() {
+		view.setTxtConcept("");
+		view.setTxtAccountStatus("");
+		view.setTxtAccountType("");
+	}
+	
+	@Override
+	public void setAccountAttributes() {
+		view.setConcept(view.getTxtConcept());
+		view.setAccountType(Integer.parseInt(view.getTxtAccountType()));
+		view.setAccountStatus(Integer.parseInt(view.getTxtAccountStatus()));
+		view.setIdSelected(view.getIdaccount());
 	}
 
 }

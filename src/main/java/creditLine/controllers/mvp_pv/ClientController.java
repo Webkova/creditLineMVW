@@ -17,6 +17,7 @@ import creditLine.persistence.entities.Client;
 import creditLine.services.mvp_pv.ClientService;
 import creditLine.view.mvp_pv.MainView;
 
+
 @Service
 @Transactional
 @Lazy
@@ -48,7 +49,7 @@ public class ClientController implements ClientService {
 
 	@Override
 	public void save() {
-		Client client = new Client(getName(), getSurname(), getAddress(), getNationality());
+		Client client = new Client(view.getName(), view.getSurname(), view.getAddress(), view.getNationality());
 		repository.save(client);
 	}
 
@@ -68,8 +69,10 @@ public class ClientController implements ClientService {
 
 	@Override
 	public void addClient() {
+
 		if (view.isFilledClientCreateFields()) {
-			view.saveClient();
+			refreshClient();
+			save();
 			view.clearTableColumns();
 		}	
 	}
@@ -81,14 +84,14 @@ public class ClientController implements ClientService {
 
 	@Override
 	public void updateClient() {
-		repository.updateClient(getIdClient(), getName(), getSurname(), getAddress(), getNationality());
+		repository.updateClient(idClient, name, surname, address, nationality);
 	}
 
 	@Override
 	public void updateClientProcess() {
-		boolean isUpdated = view.isClientDataFilled();
-		if (isUpdated) {
-			view.refreshClient();
+
+		if (view.isClientDataFilled()) {
+			refreshClient();
 		}
 	}
 	
@@ -102,7 +105,7 @@ public class ClientController implements ClientService {
 	public void findByIdclient(int idClient) {
 		Client client = repository.findByIdclient(idClient);
 		if (StringUtils.isEmpty(name)) {
-			view.clearClientFields();
+			clearTClientFields();
 			view.setName("");
 			view.setSurname("");
 			view.setAddress("");
@@ -118,54 +121,32 @@ public class ClientController implements ClientService {
 
 	}
 
+	
 	@Override
-	public int getIdClient() {
-		return idClient;
+	public void refreshClient() {
+		view.setIdclient(view.getIdSelected());
+		view.setName(view.getTxtName());
+		view.setSurname(view.getTxtSurname());
+		view.setAddress(view.getTxtAddress());
+		view.setNationality(view.getTxtNationality());
+	}
+	
+	@Override
+	public void clearTClientFields() {
+		view.setTxtName("");
+		view.setTxtSurname("");
+		view.setTxtAddress("");
+		view.setTxtNationality("");
+	}
+	
+	@Override
+	public void displayClientSelected(){
+		view.setTxtName(view.getName());
+		view.setTxtSurname(view.getSurname());
+		view.setTxtAddress(view.getAddress());
+		view.setTxtNationality(view.getNationality());
+		view.setIdSelected(view.getIdclient());
 	}
 
-	@Override
-	public void setIdClient(int idClient) {
-		this.idClient = idClient;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String getSurname() {
-		return surname;
-	}
-
-	@Override
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	@Override
-	public String getAddress() {
-		return address;
-	}
-
-	@Override
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	@Override
-	public String getNationality() {
-		return nationality;
-	}
-
-	@Override
-	public void setNationality(String nationality) {
-		this.nationality = nationality;
-	}
-
+	
 }
