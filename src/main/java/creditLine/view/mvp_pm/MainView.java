@@ -10,6 +10,10 @@ import org.springframework.util.StringUtils;
 
 import creditLine.services.mvp_pm.AccountService;
 import creditLine.services.mvp_pm.ClientService;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -89,87 +93,6 @@ public class MainView {
 	private final String accountStatusColumnKey = "accountStatus";
 	private final String creationDateAccountColumnKey = "creationDate";
 	
-	
-		
-	public int getIdaccount() {
-		return idaccount;
-	}
-
-	public void setIdaccount(int idaccount) {
-		this.idaccount = idaccount;
-	}
-
-	public String getConcept() {
-		return concept;
-	}
-
-	public void setConcept(String concept) {
-		this.concept = concept;
-	}
-
-	public int getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(int accountType) {
-		this.accountType = accountType;
-	}
-
-	public int getAccountStatus() {
-		return accountStatus;
-	}
-
-	public void setAccountStatus(int accountStatus) {
-		this.accountStatus = accountStatus;
-	}
-
-	public String getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	public int getIdclient() {
-		return idclient;
-	}
-
-	public void setIdclient(int idclient) {
-		this.idclient = idclient;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getNationality() {
-		return nationality;
-	}
-
-	public void setNationality(String nationality) {
-		this.nationality = nationality;
-	}
 
 	public void setClientService(ClientService clientService) {
 		this.clientService = clientService;
@@ -258,11 +181,11 @@ public class MainView {
 
 	public void displayClientSelected() {
 		if (StringUtils.isEmpty(name)) {
-			setTxtName(getName());
-			setTxtSurname(getSurname());
-			setTxtAddress(getAddress());
-			setTxtNationality(getNationality());
-			idSelected = getIdclient();
+			setTxtName(name);
+			setTxtSurname(surname);
+			setTxtAddress(address);
+			setTxtNationality(nationality);
+			idSelected = idclient;
 			
 		}
 	}
@@ -303,8 +226,7 @@ public class MainView {
 		TableColumn<Map, String> creationDateColumn = new TableColumn<>("Fecha creación");
 		creationDateColumn.setCellValueFactory(new MapValueFactory<>(creationDateColumnKey));
 
-		tblClient.getColumns().setAll(idColumn, nameColumn, surnameColumn, addressColumn, nationalityColumn,
-				creationDateColumn);
+		tblClient.getColumns().setAll(idColumn, nameColumn, surnameColumn, addressColumn, nationalityColumn,creationDateColumn);
 	}
 	
 	
@@ -316,10 +238,10 @@ public class MainView {
      	if (StringUtils.isEmpty(clientService.getName())) {
     		clearClientFields(); 
     	}else {
-    		setName(clientService.getName());
-        	setSurname(clientService.getSurname());
-        	setAddress(clientService.getAddress());
-        	setNationality(clientService.getNationality());
+    		name = clientService.getName();
+        	surname = clientService.getSurname();
+        	address = clientService.getAddress();
+        	nationality = clientService.getNationality();
     	}
 
     	addClientColumns(tblClient);
@@ -344,13 +266,9 @@ public class MainView {
 	}
 
 	public boolean isFilledClientCreateFields() {
-		String name = getTxtName().getText();
-		String surname = getTxtSurname().getText();
-		String address = getTxtAddress().getText();
-		String nationality = getTxtNationality().getText();
 
-		if (!StringUtils.isEmpty(name) || !StringUtils.isEmpty(surname) || !StringUtils.isEmpty(address)
-				|| !StringUtils.isEmpty(nationality)) {
+		if (!StringUtils.isEmpty(getTxtName().getText()) || !StringUtils.isEmpty(getTxtSurname().getText()) || 
+				!StringUtils.isEmpty(getTxtAddress().getText()) || !StringUtils.isEmpty(getTxtNationality().getText())) {
 			clientService.setName(name);
 			clientService.setSurname(surname);
 			clientService.setAddress(address);
@@ -380,13 +298,9 @@ public class MainView {
 	}
 
 	public boolean isClientDataFilled() {
-		String name = getTxtName().getText();
-		String surname = getTxtSurname().getText();
-		String address = getTxtAddress().getText();
-		String nationality = getTxtNationality().getText();
 
-		if (idSelected != 0 || StringUtils.isEmpty(name) || StringUtils.isEmpty(surname) || StringUtils.isEmpty(address)
-				|| StringUtils.isEmpty(nationality)) {
+		if (idSelected != 0 || StringUtils.isEmpty(getTxtName().getText()) || StringUtils.isEmpty(getTxtSurname().getText()) || StringUtils.isEmpty(getTxtAddress().getText())
+				|| StringUtils.isEmpty(getTxtNationality().getText())) {
 			return true;
 		}
 		return false;
@@ -425,7 +339,7 @@ public class MainView {
 
 			Map<String, Object> map = new HashMap<>();
 			map.put(idAccountColumnKey, idclient);
-			map.put(conceptColumnKey, getConcept());
+			map.put(conceptColumnKey, concept);
 			map.put(accountTypeColumnKey, accountType);
 			map.put(accountStatusColumnKey, accountStatus);
 			map.put(creationDateAccountColumnKey, creationDate);
@@ -452,7 +366,7 @@ public class MainView {
 		this.addClientColumns(tblClient);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	public void getAccountsByID(TableView<Map> tblAccount) {
 
 		TableColumn<Map, Integer> idColumn = new TableColumn<>("ID Cuenta");
@@ -494,27 +408,24 @@ public class MainView {
 	}
 
 	public boolean isFilledAccountData() {
-		String concept = getTxtConcept().getText();
-		int accountType = Integer.parseInt(getTxtAccountType().getText());
-		int accountStatus = Integer.parseInt(getTxtAccountStatus().getText());
 
-		if (idAccountSelected != 0 || StringUtils.isEmpty(concept) || StringUtils.isEmpty(accountType)
-				|| StringUtils.isEmpty(accountStatus)) {
+		if (idAccountSelected != 0 || StringUtils.isEmpty(getTxtConcept().getText()) || StringUtils.isEmpty(Integer.parseInt(getTxtAccountType().getText()))
+				|| StringUtils.isEmpty(Integer.parseInt(getTxtAccountStatus().getText()))) {
 			return true;
 		}
 		return false;
 	}
 	
 	public void refreshAccount() {
-		setIdaccount(idAccountSelected);
+		idaccount = idAccountSelected;
 		updateAccountData();
 		accountService.updateAccount();
 	}
 	
 	public void updateAccountData() {
-		setConcept(getTxtConcept().getText());
-		setAccountType(Integer.parseInt(getTxtAccountType().getText()));
-		setAccountStatus(Integer.parseInt(getTxtAccountStatus().getText()));
+		concept = getTxtConcept().getText();
+		accountType = Integer.parseInt(getTxtAccountType().getText());
+		accountStatus = Integer.parseInt(getTxtAccountStatus().getText());
 	}
 	
 	public int getIdAccountSelected() {

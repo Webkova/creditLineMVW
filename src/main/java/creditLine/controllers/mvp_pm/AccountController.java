@@ -5,10 +5,12 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import creditLine.persistence.daos.AccountRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.services.mvp_pm.AccountService;
+import creditLine.view.mvp_pm.MainView;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
