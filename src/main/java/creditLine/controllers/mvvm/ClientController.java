@@ -15,6 +15,7 @@ import creditLine.persistence.daos.ClientRepository;
 import creditLine.persistence.entities.Account;
 import creditLine.persistence.entities.Client;
 import creditLine.services.mvvm.ClientService;
+import creditLine.view.mvvm.MainView;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -84,8 +85,7 @@ public class ClientController implements ClientService {
 		address.setValue(client.getAddress());
 		nationality.setValue(client.getNationality());
 		idClient.setValue(client.getIdclient());
-		
-		System.out.println("El valor de name es: " +  name.getValue());
+
 	}
 	
 	@Override

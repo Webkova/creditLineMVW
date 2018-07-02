@@ -68,12 +68,7 @@ public class MainView {
 
 	private int idAccountSelected = 0;
 	
-	private int idclient;
-	private String name;
-	private String surname;
-	private String address;
-	private String nationality;
-	
+
 	private IntegerProperty idclientBinder = new SimpleIntegerProperty();
 	private StringProperty nameBinder = new SimpleStringProperty();
 	private StringProperty surnameBinder = new SimpleStringProperty();
@@ -100,93 +95,7 @@ public class MainView {
 	private final String creationDateAccountColumnKey = "creationDate";
 	
 	
-	public IntegerProperty getIdclientBinder() {
-		return idclientBinder;
-	}
-
-	public void setIdclientBinder(IntegerProperty idclientBinder) {
-		this.idclientBinder = idclientBinder;
-	}
-
-	public StringProperty getNameBinder() {
-		return nameBinder;
-	}
-
-	public void setNameBinder(StringProperty nameBinder) {
-		this.nameBinder = nameBinder;
-	}
-
-	public StringProperty getSurnameBinder() {
-		return surnameBinder;
-	}
-
-	public void setSurnameBinder(StringProperty surnameBinder) {
-		this.surnameBinder = surnameBinder;
-	}
-
-	public StringProperty getAddressBinder() {
-		return addressBinder;
-	}
-
-	public void setAddressBinder(StringProperty addressBinder) {
-		this.addressBinder = addressBinder;
-	}
-
-	public StringProperty getNationalityBinder() {
-		return nationalityBinder;
-	}
-
-	public void setNationalityBinder(StringProperty nationalityBinder) {
-		this.nationalityBinder = nationalityBinder;
-	}
 	
-	public int getIdclient() {
-		return idclient;
-	}
-
-	public void setIdclient(int idclient) {
-		this.idclient = idclient;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getNationality() {
-		return nationality;
-	}
-
-	public void setNationality(String nationality) {
-		this.nationality = nationality;
-	}
-
-	public void setClientService(ClientService clientService) {
-		this.clientService = clientService;
-	}
-
-	public void setAccountService(AccountService accountService) {
-		this.accountService = accountService;
-	}
 
 	public TextField getTxtName() {
 		return txtName;
@@ -276,11 +185,11 @@ public class MainView {
 
 	public void displayClientSelected() {
 		if (StringUtils.isEmpty(nameBinder)) {
-			setTxtName(getName());
-			setTxtSurname(getSurname());
-			setTxtAddress(getAddress());
-			setTxtNationality(getNationality());
-			idSelected = getIdclient();
+			setTxtName(nameBinder.getValue());
+			setTxtSurname(surnameBinder.getValue());
+			setTxtAddress(addressBinder.getValue());
+			setTxtNationality(nationalityBinder.getValue());
+			idSelected = idclientBinder.getValue();
 			
 		}
 	}
@@ -442,7 +351,7 @@ public class MainView {
 			map.put(accountTypeColumnKey, accountTypeBinder.getValue());
 			map.put(accountStatusColumnKey, accountStatusBinder.getValue());
 			map.put(creationDateAccountColumnKey, creationDateBinder.getValue());
-			//map.put(creationDateColumnKey, getCreationDate());
+
 			items.add(map);
 		
 		return items;
@@ -465,7 +374,7 @@ public class MainView {
 		this.addClientColumns(tblClient);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	public void getAccountsByID(TableView<Map> tblAccount) {
 
 		TableColumn<Map, Integer> idColumn = new TableColumn<>("ID Cuenta");
